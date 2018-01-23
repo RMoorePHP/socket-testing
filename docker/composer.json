@@ -1,0 +1,11 @@
+{
+    "name": "rmoore/docker",
+    "description": "Docker setup for laravel",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Robert Moore",
+            "email": "robert@sliske.uk"
+        }
+    ]
+}

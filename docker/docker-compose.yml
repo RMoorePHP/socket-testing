@@ -1,0 +1,94 @@
+version: '3.2'
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/services/app/Dockerfile
+        volumes:
+            - .:/app:cached
+        environment:
+            DB_CONNECTION: mysql
+            DB_HOST: mysql
+            DB_DATABASE: homestead
+            DB_USERNAME: homestead
+            DB_PASSWORD: secret
+            CACHE_DRIVER: redis
+            QUEUE_DRIVER: redis
+            REDIS_HOST: redis
+
+    php:
+        build:
+            context: .
+            dockerfile: docker/services/php/Dockerfile
+        volumes:
+            - .:/app:cached
+        environment:
+            DB_CONNECTION: mysql
+            DB_HOST: mysql
+            DB_DATABASE: homestead
+            DB_USERNAME: homestead
+            DB_PASSWORD: secret
+            CACHE_DRIVER: redis
+            QUEUE_DRIVER: redis
+            REDIS_HOST: redis
+
+    nginx:
+        build:
+            context: .
+            dockerfile: docker/services/nginx/Dockerfile
+        volumes:
+            - .:/app:cached
+        ports:
+            - 8080:80
+
+    redis:
+        image: redis
+
+    mysql:
+        image: mysql:5.7
+        volumes:
+            - mysql_data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: homestead
+            MYSQL_USER: homestead
+            MYSQL_PASSWORD: secret
+        ports:
+            - 33061:3306
+
+    webpack:
+        build:
+            context: .
+            dockerfile: docker/services/webpack/Dockerfile
+        volumes:
+            - .:/app:cached
+        restart: on-failure
+
+    horizon:
+        build:
+            context: .
+            dockerfile: docker/services/horizon/Dockerfile
+        volumes:
+            - .:/app:cached
+        restart: unless-stopped
+        environment:
+            DB_CONNECTION: mysql
+            DB_HOST: mysql
+            DB_DATABASE: homestead
+            DB_USERNAME: homestead
+            DB_PASSWORD: secret
+            REDIS_HOST: redis
+            CACHE_DRIVER: redis
+            QUEUE_DRIVER: redis
+
+    node:
+        build:
+            context: .
+            dockerfile: docker/services/node/Dockerfile
+        volumes:
+            - ./node:/app:cached
+        ports:
+            - 3000:3000
+
+volumes:
+    mysql_data:

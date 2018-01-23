@@ -1,0 +1,5 @@
+#!/bin/bash
+
+composer require rmoore/docker:dev-master --dev
+composer require laravel/horizon
+ln -s ./vendor/rmoore/docker/docker-compose.yml
